@@ -1,3 +1,6 @@
+## 3.1.6
+  - Update execusion framework to PTY to allow non-blocking command execusion
+
 ## 3.1.5
   - Update gemspec summary
 
