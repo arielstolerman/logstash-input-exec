@@ -96,12 +96,12 @@ class LogStash::Inputs::Exec < LogStash::Inputs::Base
       { :out => o, :err => e }.each do |k, s|
         Thread.new do
           until (line = s.gets).nil? do
-            line.gsub!(/\s*$/,"")
             if k == :out
               @codec.decode(line) do |event|
                 emit(event, queue)
               end
             elsif @log_stderr
+              line.gsub!(/\s*$/,"")
               @logger.info("#{line}")
             end
           end
