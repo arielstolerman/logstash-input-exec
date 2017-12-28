@@ -96,12 +96,13 @@ class LogStash::Inputs::Exec < LogStash::Inputs::Base
       { :out => o, :err => e }.each do |k, s|
         Thread.new do
           until (line = s.gets).nil? do
+            line.gsub!(/\s*$/,"")
             if k == :out
               @codec.decode(line) do |event|
                 emit(event, queue)
               end
             elsif @log_stderr
-              @logger.info(line)
+              @logger.info("#{line}")
             end
           end
         end
@@ -115,6 +116,9 @@ class LogStash::Inputs::Exec < LogStash::Inputs::Base
       @logger.error("Exception while running command",
         :command => command, :e => e, :backtrace => e.backtrace)
     ensure
+      if t and t.value.exitstatus != 0
+        @logger.error("Command exited with a non-zero status", :exitstatus => t.value.exitstatus)
+      end
       stop
     end
   end
