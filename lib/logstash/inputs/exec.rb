@@ -117,7 +117,8 @@ class LogStash::Inputs::Exec < LogStash::Inputs::Base
         :command => command, :e => e, :backtrace => e.backtrace)
     ensure
       if t and t.value.exitstatus != 0
-        @logger.error("Command exited with a non-zero status", :exitstatus => t.value.exitstatus)
+        @logger.error("Command exited with a non-zero status",
+          :command => command, :exitstatus => t.value.exitstatus)
       end
       stop
     end
